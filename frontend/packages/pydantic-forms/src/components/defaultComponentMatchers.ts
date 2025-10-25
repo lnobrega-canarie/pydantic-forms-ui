@@ -10,6 +10,7 @@ import {
     CheckboxField,
     DividerField,
     DropdownField,
+    FloatField,
     HiddenField,
     IntegerField,
     LabelField,
@@ -195,6 +196,17 @@ const defaultComponentMatchers: PydanticComponentMatcher[] = [
             return field.type === PydanticFormFieldType.STRING;
         },
         validator: zodValidationPresets.string,
+    },
+    {
+        id: 'floatfield',
+        ElementMatch: {
+            Element: FloatField,
+            isControlledElement: true,
+        },
+        matcher(field) {
+            return field.type === PydanticFormFieldType.NUMBER;
+        },
+        validator: zodValidationPresets.float,
     },
 ];
 
