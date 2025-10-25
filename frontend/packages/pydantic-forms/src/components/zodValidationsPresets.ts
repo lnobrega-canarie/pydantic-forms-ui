@@ -9,7 +9,42 @@
  */
 import { z } from 'zod/v4';
 
-import { PydanticFormZodValidationPresets } from '@/types';
+import { PydanticFormField, PydanticFormZodValidationPresets } from '@/types';
+
+const addNumericValidationRules = (
+    validationRule: any,
+    field: PydanticFormField
+): z.ZodTypeAny => {
+    const {
+        minimum,
+        maximum,
+        exclusiveMaximum,
+        exclusiveMinimum,
+        multipleOf,
+    } = field?.validations ?? {};
+
+    if (minimum) {
+        validationRule = validationRule.gte(minimum);
+    }
+
+    if (exclusiveMinimum) {
+        validationRule = validationRule.gt(exclusiveMinimum);
+    }
+
+    if (maximum) {
+        validationRule = validationRule.lte(maximum);
+    }
+
+    if (exclusiveMaximum) {
+        validationRule = validationRule.lt(exclusiveMaximum);
+    }
+
+    if (multipleOf) {
+        validationRule = validationRule.multipleOf(multipleOf);
+    }
+
+    return validationRule;
+};
 
 // to prevent duplicate code in components that have (almost)the same validation
 export const zodValidationPresets: PydanticFormZodValidationPresets = {
@@ -47,37 +82,7 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
         return validationRule;
     },
     integer: (field) => {
-        const {
-            minimum,
-            maximum,
-            exclusiveMaximum,
-            exclusiveMinimum,
-            multipleOf,
-        } = field?.validations ?? {};
-
-        let validationRule = z.number().int();
-
-        if (minimum) {
-            validationRule = validationRule.gte(minimum);
-        }
-
-        if (exclusiveMinimum) {
-            validationRule = validationRule.gt(exclusiveMinimum);
-        }
-
-        if (maximum) {
-            validationRule = validationRule.lte(maximum);
-        }
-
-        if (exclusiveMaximum) {
-            validationRule = validationRule.lt(exclusiveMaximum);
-        }
-
-        if (multipleOf) {
-            validationRule = validationRule.multipleOf(multipleOf);
-        }
-
-        return validationRule;
+        return addNumericValidationRules(z.number().int(), field);
     },
     multiSelect: (field) => {
         const { minimum, maximum } = field?.validations ?? {};
@@ -95,36 +100,6 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
         return validationRule;
     },
     float: (field) => {
-        const {
-            minimum,
-            maximum,
-            exclusiveMaximum,
-            exclusiveMinimum,
-            multipleOf,
-        } = field?.validations ?? {};
-
-      let validationRule = z.number();
-
-        if (minimum) {
-            validationRule = validationRule.gte(minimum);
-        }
-
-        if (exclusiveMinimum) {
-            validationRule = validationRule.gt(exclusiveMinimum);
-        }
-
-        if (maximum) {
-            validationRule = validationRule.lte(maximum);
-        }
-
-        if (exclusiveMaximum) {
-            validationRule = validationRule.lt(exclusiveMaximum);
-        }
-
-        if (multipleOf) {
-            validationRule = validationRule.multipleOf(multipleOf);
-        }
-
-        return validationRule;
+        return addNumericValidationRules(z.number(), field);
     },
 };
