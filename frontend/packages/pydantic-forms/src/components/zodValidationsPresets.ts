@@ -94,4 +94,37 @@ export const zodValidationPresets: PydanticFormZodValidationPresets = {
 
         return validationRule;
     },
+    float: (field) => {
+        const {
+            minimum,
+            maximum,
+            exclusiveMaximum,
+            exclusiveMinimum,
+            multipleOf,
+        } = field?.validations ?? {};
+
+      let validationRule = z.number();
+
+        if (minimum) {
+            validationRule = validationRule.gte(minimum);
+        }
+
+        if (exclusiveMinimum) {
+            validationRule = validationRule.gt(exclusiveMinimum);
+        }
+
+        if (maximum) {
+            validationRule = validationRule.lte(maximum);
+        }
+
+        if (exclusiveMaximum) {
+            validationRule = validationRule.lt(exclusiveMaximum);
+        }
+
+        if (multipleOf) {
+            validationRule = validationRule.multipleOf(multipleOf);
+        }
+
+        return validationRule;
+    },
 };
